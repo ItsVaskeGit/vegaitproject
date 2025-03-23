@@ -3,9 +3,9 @@ package me.itsvaske.coffeeshopvegait.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
-@Entity
+@Entity(name = "drink_order")
 @Data
 public class Order {
 
@@ -17,5 +17,14 @@ public class Order {
     private OrderType orderType;
 
     @OneToMany(orphanRemoval = true)
-    private Set<Drink> ordered;
+    private List<Drink> ordered;
+
+    @ManyToOne
+    private Customer customer;
+
+    @ManyToOne
+    private Barman barman;
+
+    @ManyToOne
+    private Barista barista;
 }

@@ -11,9 +11,16 @@ public class Drink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private DrinkType drinkType;
-
     @ManyToOne
     private Order order;
+
+    private String name;
+
+    private int timeRequired;
+
+    private int coffeeRequired;
+
+    private double price;
+
+    private byte[] image;
 }
