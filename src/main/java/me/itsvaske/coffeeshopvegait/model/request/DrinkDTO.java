@@ -11,4 +11,6 @@ public class DrinkDTO {
 
     private int coffeeRequired;
 
+    private double price;
+
 }

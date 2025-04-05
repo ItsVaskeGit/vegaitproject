@@ -2,7 +2,6 @@ package me.itsvaske.coffeeshopvegait.service;
 
 import me.itsvaske.coffeeshopvegait.model.Drink;
 import me.itsvaske.coffeeshopvegait.model.request.DrinkDTO;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service

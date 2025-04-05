@@ -5,7 +5,12 @@ import lombok.RequiredArgsConstructor;
 import me.itsvaske.coffeeshopvegait.model.Drink;
 import me.itsvaske.coffeeshopvegait.model.request.DrinkDTO;
 import me.itsvaske.coffeeshopvegait.repo.DrinkRepository;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+@Service
 @RequiredArgsConstructor
 public class DrinkServiceImpl implements DrinkService {
 
@@ -20,6 +25,7 @@ public class DrinkServiceImpl implements DrinkService {
         newDrink.setName(drink.getName());
         newDrink.setCoffeeRequired(drink.getCoffeeRequired());
         newDrink.setTimeRequired(drink.getTimeRequired());
+        newDrink.setPrice(drink.getPrice());
 
         return repository.save(newDrink);
     }
@@ -28,11 +34,13 @@ public class DrinkServiceImpl implements DrinkService {
     @Transactional
     public Drink modify(Drink drink) {
 
-        var existingDrink = repository.findById(drink.getId()).orElseThrow();
+        var existingDrink = repository.findById(drink.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         existingDrink.setName(drink.getName());
         existingDrink.setTimeRequired(drink.getTimeRequired());
         existingDrink.setCoffeeRequired(drink.getCoffeeRequired());
+        existingDrink.setPrice(drink.getPrice());
 
         return repository.save(existingDrink);
     }
@@ -40,7 +48,8 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     public void remove(Drink drink) {
 
-        var existingDrink = repository.findById(drink.getId()).orElseThrow();
+        var existingDrink = repository.findById(drink.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         repository.delete(existingDrink);
     }
@@ -48,7 +57,8 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     public double price(Long id) {
 
-        var existingDrink = repository.findById(id).orElseThrow();
+        var existingDrink = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         return existingDrink.getPrice();
     }
@@ -56,7 +66,8 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     public byte[] image(Long id) {
 
-        var existingDrink = repository.findById(id).orElseThrow();
+        var existingDrink = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         return existingDrink.getImage();
     }
@@ -64,7 +75,8 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     public int coffeeRequired(Long id) {
 
-        var existingDrink = repository.findById(id).orElseThrow();
+        var existingDrink = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         return existingDrink.getCoffeeRequired();
     }
@@ -72,7 +84,8 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     public int timeToPrepare(Long id) {
 
-        var existingDrink = repository.findById(id).orElseThrow();
+        var existingDrink = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
         return existingDrink.getTimeRequired();
     }

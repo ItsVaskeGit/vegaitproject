@@ -11,9 +11,6 @@ public class Drink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Order order;
-
     private String name;
 
     private int timeRequired;

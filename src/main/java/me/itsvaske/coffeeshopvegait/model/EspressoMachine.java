@@ -12,4 +12,7 @@ public class EspressoMachine {
     private Long id;
 
     private double coffeeLeft;
+
+    private Boolean ready;
+
 }

@@ -24,7 +24,4 @@ public class Order {
 
     @ManyToOne
     private Barman barman;
-
-    @ManyToOne
-    private Barista barista;
 }

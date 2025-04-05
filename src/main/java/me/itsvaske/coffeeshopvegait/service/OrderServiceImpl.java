@@ -6,14 +6,19 @@ import me.itsvaske.coffeeshopvegait.model.Barista;
 import me.itsvaske.coffeeshopvegait.model.Drink;
 import me.itsvaske.coffeeshopvegait.model.Order;
 import me.itsvaske.coffeeshopvegait.model.request.OrderDTO;
+import me.itsvaske.coffeeshopvegait.repo.DrinkRepository;
 import me.itsvaske.coffeeshopvegait.repo.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository repository;
+    private final DrinkRepository drinkRepository;
+    private final EspressoMachineService espressoMachineService;
 
     @Override
     @Transactional
@@ -33,13 +38,16 @@ public class OrderServiceImpl implements OrderService {
 
         for(Barista barista : baristas) {
             var espressoMachine = barista.getEspressoMachine();
-            if(espressoMachine.getCoffeeLeft() >= coffeeRequired) {
-                newOrder.setBarista(barista);
+            if(espressoMachine.getCoffeeLeft() >= coffeeRequired && espressoMachine.getReady()) {
+                newOrder.setBarman(order.getBarman());
                 espressoMachine.setCoffeeLeft(espressoMachine.getCoffeeLeft() - coffeeRequired);
+            }else if(espressoMachine.getCoffeeLeft() < drinkRepository.findCoffeeWithLeastRequirements() && espressoMachine.getReady()) {
+                espressoMachine.setReady(false);
+                espressoMachineService.startRefillProcess(espressoMachine.getId());
             }
         }
 
-        if(newOrder.getBarista() == null) {
+        if(newOrder.getBarman() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
