@@ -30,20 +30,14 @@ public class OrderServiceImpl implements OrderService {
 
         var newOrder = new Order();
 
-        var coffeeRequired = 0;
-
-        for(Drink drink : order.getDrinks()) {
-            coffeeRequired += drink.getCoffeeRequired();
-        }
-
         for(Barista barista : baristas) {
             var espressoMachine = barista.getEspressoMachine();
-            if(espressoMachine.getCoffeeLeft() >= coffeeRequired && espressoMachine.getReady()) {
+            if(espressoMachine.getCoffeeLeft() >= order.getSubtotal() && espressoMachine.getReady()) {
                 newOrder.setBarman(order.getBarman());
-                espressoMachine.setCoffeeLeft(espressoMachine.getCoffeeLeft() - coffeeRequired);
+                espressoMachine.setCoffeeLeft(espressoMachine.getCoffeeLeft() - order.getSubtotal());
             }else if(espressoMachine.getCoffeeLeft() < drinkRepository.findCoffeeWithLeastRequirements() && espressoMachine.getReady()) {
                 espressoMachine.setReady(false);
-                espressoMachineService.startRefillProcess(espressoMachine.getId());
+                espressoMachineService.startRefillProcess(espressoMachine.getId()); // In case I need to reset every machine after it determines that it needs to do it
             }
         }
 
@@ -56,7 +50,8 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setBarman(order.getBarman());
         newOrder.setCustomer(order.getCustomer());
 
-        return new ResponseEntity<>(repository.save(newOrder), HttpStatus.OK);
+        return new ResponseEntity<>(repository.save(newOrder), HttpStatus.CREATED);
     }
+
 
 }

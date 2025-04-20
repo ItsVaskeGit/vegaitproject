@@ -3,8 +3,10 @@ package me.itsvaske.coffeeshopvegait.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.itsvaske.coffeeshopvegait.model.Barista;
+import me.itsvaske.coffeeshopvegait.model.CoffeeShop;
 import me.itsvaske.coffeeshopvegait.model.EspressoMachine;
 import me.itsvaske.coffeeshopvegait.model.request.BaristaDTO;
+import me.itsvaske.coffeeshopvegait.model.request.CoffeeShopDTO;
 import me.itsvaske.coffeeshopvegait.repo.BaristaRepository;
 import me.itsvaske.coffeeshopvegait.repo.CoffeeShopRepository;
 import me.itsvaske.coffeeshopvegait.repo.EspressoMachineRepository;
@@ -36,7 +38,7 @@ public class CoffeeShopServiceImpl implements CoffeeShopService {
             newBarista.setName(barista.getName());
             newBarista.setCoffeeShop(coffeeShop);
 
-            return new ResponseEntity<>(baristaRepository.save(newBarista), HttpStatus.OK);
+            return new ResponseEntity<>(baristaRepository.save(newBarista), HttpStatus.CREATED);
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot add more than 3 baristas to one coffee shop.");
         }
@@ -62,5 +64,23 @@ public class CoffeeShopServiceImpl implements CoffeeShopService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Barista already has an assigned espresso machine.");
         }
 
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CoffeeShop> addCoffeeShop(CoffeeShopDTO coffeeShopDTO) {
+
+        var existingCoffeeShop = coffeeShopRepository.findByName(coffeeShopDTO.getName());
+
+        if(existingCoffeeShop != null && existingCoffeeShop.getId() != null) {
+            System.out.println("postoji Id: " + existingCoffeeShop.getId());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        var coffeeShop = new CoffeeShop();
+
+        coffeeShop.setName(coffeeShopDTO.getName());
+
+        return new ResponseEntity<>(coffeeShopRepository.save(coffeeShop), HttpStatus.CREATED);
     }
 }

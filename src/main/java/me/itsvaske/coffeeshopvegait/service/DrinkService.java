@@ -2,22 +2,27 @@ package me.itsvaske.coffeeshopvegait.service;
 
 import me.itsvaske.coffeeshopvegait.model.Drink;
 import me.itsvaske.coffeeshopvegait.model.request.DrinkDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface DrinkService {
 
-    Drink add(DrinkDTO drink);
+    ResponseEntity<Drink> add(DrinkDTO drink);
 
-    Drink modify(Drink drink);
+    ResponseEntity<Drink> modify(Drink drink);
 
     void remove(Drink drink);
 
-    double price(Long id);
+    ResponseEntity<Double> price(Long id);
 
-    byte[] image(Long id);
+    ResponseEntity<byte[]> image(Long id);
 
-    int coffeeRequired(Long id);
+    ResponseEntity<Integer> coffeeRequired(Long id);
 
-    int timeToPrepare(Long id);
+    ResponseEntity<Integer> timeToPrepare(Long id);
+
+    List<Drink> getAll();
 }

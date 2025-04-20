@@ -6,9 +6,15 @@ import me.itsvaske.coffeeshopvegait.model.Drink;
 import me.itsvaske.coffeeshopvegait.model.request.DrinkDTO;
 import me.itsvaske.coffeeshopvegait.repo.DrinkRepository;
 import org.apache.coyote.Response;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +23,13 @@ public class DrinkServiceImpl implements DrinkService {
     private final DrinkRepository repository;
 
     @Override
+    public List<Drink> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
     @Transactional
-    public Drink add(DrinkDTO drink) {
+    public ResponseEntity<Drink> add(DrinkDTO drink) {
 
         var newDrink = new Drink();
 
@@ -27,12 +38,12 @@ public class DrinkServiceImpl implements DrinkService {
         newDrink.setTimeRequired(drink.getTimeRequired());
         newDrink.setPrice(drink.getPrice());
 
-        return repository.save(newDrink);
+        return new ResponseEntity<>(repository.save(newDrink), HttpStatus.CREATED);
     }
 
     @Override
     @Transactional
-    public Drink modify(Drink drink) {
+    public ResponseEntity<Drink> modify(Drink drink) {
 
         var existingDrink = repository.findById(drink.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
@@ -42,7 +53,7 @@ public class DrinkServiceImpl implements DrinkService {
         existingDrink.setCoffeeRequired(drink.getCoffeeRequired());
         existingDrink.setPrice(drink.getPrice());
 
-        return repository.save(existingDrink);
+        return new ResponseEntity<>(repository.save(existingDrink), HttpStatus.ACCEPTED);
     }
 
     @Override
@@ -55,38 +66,38 @@ public class DrinkServiceImpl implements DrinkService {
     }
 
     @Override
-    public double price(Long id) {
+    public ResponseEntity<Double> price(Long id) {
 
         var existingDrink = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
-        return existingDrink.getPrice();
+        return new ResponseEntity<>(existingDrink.getPrice(), HttpStatus.OK);
     }
 
     @Override
-    public byte[] image(Long id) {
+    public ResponseEntity<byte[]> image(Long id) {
 
         var existingDrink = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
-        return existingDrink.getImage();
+        return new ResponseEntity<>(existingDrink.getImage(), HttpStatus.OK);
     }
 
     @Override
-    public int coffeeRequired(Long id) {
+    public ResponseEntity<Integer> coffeeRequired(Long id) {
 
         var existingDrink = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
-        return existingDrink.getCoffeeRequired();
+        return new ResponseEntity<>(existingDrink.getCoffeeRequired(), HttpStatus.OK);
     }
 
     @Override
-    public int timeToPrepare(Long id) {
+    public ResponseEntity<Integer> timeToPrepare(Long id) {
 
         var existingDrink = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested drink cannot be found."));
 
-        return existingDrink.getTimeRequired();
+        return new ResponseEntity<>(existingDrink.getTimeRequired(), HttpStatus.OK);
     }
 }

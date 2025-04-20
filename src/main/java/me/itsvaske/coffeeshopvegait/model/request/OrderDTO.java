@@ -19,4 +19,5 @@ public class OrderDTO {
     private List<Drink> drinks;
     private Customer customer;
     private Barman barman;
+    private double subtotal;
 }

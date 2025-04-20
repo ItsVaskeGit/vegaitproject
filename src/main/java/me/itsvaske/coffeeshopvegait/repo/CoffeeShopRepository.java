@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CoffeeShopRepository extends JpaRepository<CoffeeShop, Long> {
 
-
+    CoffeeShop findByName(String name);
 }

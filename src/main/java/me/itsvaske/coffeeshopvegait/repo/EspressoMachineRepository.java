@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EspressoMachineRepository extends JpaRepository<EspressoMachine, Long> {
 
-    @Query("update EspressoMachine e SET e.coffeeLeft = 300")
+    @Query("update EspressoMachine e SET e.coffeeLeft = 300, e.ready = true")
     void resetCoffee();
 
-    @Query("update EspressoMachine e SET e.coffeeLeft = 300 WHERE e.id = :#{#id}")
+    @Query("update EspressoMachine e SET e.coffeeLeft = 300, e.ready = true WHERE e.id = :#{#id}")
     void refill(@Param("id") Long espressoMachineId);
 }
